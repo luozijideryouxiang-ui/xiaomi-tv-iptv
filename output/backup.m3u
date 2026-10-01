@@ -1,0 +1,3 @@
+#EXTM3U x-tvg-url="https://raw.githubusercontent.com/luozijideryouxiang-ui/xiaomi-tv-iptv/main/output/epg.xml"
+#EXTINF:-1 tvg-id="CCTV13" tvg-name="CCTV-13 新闻" tvg-logo="https://raw.githubusercontent.com/fanmingming/live/main/tv/CCTV13.png" group-title="央视",CCTV-13 新闻
+http://74.91.26.218:82/live/cctv13hd.m3u8

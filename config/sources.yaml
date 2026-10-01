@@ -1,0 +1,110 @@
+sources:
+  - id: guovin-iptv-api-local
+    name: Guovin IPTV-API 本机生成结果
+    url: http://127.0.0.1:8080/m3u
+    format: m3u
+    priority: 10
+    enabled: false
+    project_url: https://github.com/Guovin/iptv-api
+    rights_note: >-
+      这是按该项目 README 中 service_port 默认值 8080 与 /m3u 接口拼成的本机地址，不是 Guovin 发布的公共直播源。
+      项目 README 明确说明不提供数据源；只有在本机自行部署并配置了已获授权的数据源后才可用。
+      checking.allow_private=false 应用于播放流地址校验；此条仅是用户明确配置的本机生成结果入口。
+  - id: joevess-iptv-backup
+    name: joevess/IPTV 含备用线路表
+    url: https://raw.githubusercontent.com/joevess/IPTV/main/sources/iptv_sources.m3u8
+    format: m3u
+    priority: 20
+    enabled: true
+    project_url: https://github.com/joevess/IPTV
+    rights_note: >-
+      README 将此地址列为包含央视、卫视及地方台备用源的订阅表；当前下载结果只有 #EXTM3U 头、没有频道项。
+      保持启用以便上游恢复后自动重用；读取失败或空列表时应沿用缓存。上游来源与授权未逐条核实，不绕过 DRM、付费墙或认证。
+  - id: iptv-cn-ipv4
+    name: IPTV-CN/IPTV 中国频道列表
+    url: https://iptv-cn.github.io/IPTV/index.m3u
+    format: m3u
+    priority: 30
+    enabled: true
+    project_url: https://github.com/IPTV-CN/IPTV
+    rights_note: >-
+      README 将此地址列为播放器订阅入口，并说明项目基于 iptv-org、供作者个人使用。
+      公网可访问不等于已证明节目授权；频道可用性与转播权均未逐条核实，只保留公开列表入口，不绕过 DRM、付费墙或认证。
+  - id: iptv-org-cn
+    name: iptv-org 中国频道补充列表
+    url: https://iptv-org.github.io/iptv/countries/cn.m3u
+    format: m3u
+    priority: 40
+    enabled: true
+    project_url: https://github.com/iptv-org/iptv
+    rights_note: >-
+      这是 iptv-org 发布的中国频道列表，已下载验证为有效 M3U 且含 CCTV-8；项目称其收集公开频道链接，具体播放授权未逐条核实。
+      仅作低优先级补充，不绕过 DRM、付费墙或认证。
+  - id: zhyzjkpa-iptv
+    name: zhyzjkpa/iptv all.txt
+    url: https://raw.githubusercontent.com/zhyzjkpa/iptv/master/all.txt
+    format: txt
+    priority: 80
+    enabled: true
+    project_url: https://github.com/zhyzjkpa/iptv
+    rights_note: >-
+      GitHub API 当前根目录能确认 all.txt 存在，但该仓库没有 README 或可见的来源/授权说明；播放可用性与节目授权未逐条核实。
+      公网可访问不等于已证明节目授权；仅由频道白名单和播放验证决定是否纳入。
+  - id: reysc-m3u8
+    name: reysc/M3U8 all.m3u
+    url: https://raw.githubusercontent.com/reysc/M3U8/master/all.m3u
+    format: m3u
+    priority: 90
+    enabled: true
+    project_url: https://github.com/reysc/M3U8
+    rights_note: >-
+      README 主要说明 M3U 格式与工具，未说明直播流来源或授权，仓库也未见 LICENSE；播放可用性与节目授权未逐条核实。
+      公网可访问不等于已证明节目授权；仅由频道白名单和播放验证决定是否纳入。
+  - id: reysc-txt-backup
+    name: reysc/M3U8 TXT 备用表
+    url: https://raw.githubusercontent.com/reysc/M3U8/master/lt.txt
+    format: txt
+    priority: 95
+    enabled: true
+    project_url: https://github.com/reysc/M3U8
+    rights_note: 同仓库中的 TXT 备用列表；只检查目标频道，不使用需要账号密码或 DRM 解密的线路。
+
+epg:
+  published_url: https://raw.githubusercontent.com/luozijideryouxiang-ui/xiaomi-tv-iptv/main/output/epg.xml
+  urls:
+    - https://live.fanmingming.cn/e.xml
+    - https://raw.githubusercontent.com/fanmingming/live/main/e.xml
+  logo_template: https://raw.githubusercontent.com/fanmingming/live/main/tv/{name}.png
+  rights_note: >-
+    EPG 与台标入口取自 fanmingming/live README；README 说明其 EPG 由 112114.xyz 分发且无法保证准确性。
+    README 所列网站台标域名在当前执行环境 TLS 失败，因此模板指向同一官方仓库中已确认可下载的图片文件。
+    {name} 是上游图片文件名（例如 CCTV1），不是频道展示名；只为已核实存在的图标写入 channels.yaml。
+
+candidates:
+  - name: 汕头综合
+    url: http://211.97.63.3:801/hls/81/index.m3u8
+    source: user-shantou
+    rights_note: 用户给定的汕头综合候选地址；当前执行环境请求返回 HTTP 502，授权未核实。只有后续连接与视频检查通过才可选用，不绕过 DRM 或付费墙。
+  - name: 汕头经济
+    url: http://211.97.63.3:801/hls/82/index.m3u8
+    source: user-shantou
+    rights_note: 用户给定的汕头经济候选地址；当前执行环境请求返回 HTTP 502，授权未核实。只有后续连接与视频检查通过才可选用，不绕过 DRM 或付费墙。
+  - name: 汕头体育
+    url: http://211.97.63.3:801/hls/80/index.m3u8
+    source: user-shantou
+    rights_note: 用户给定的汕头体育候选地址；当前执行环境请求返回 HTTP 502，授权未核实。只有后续连接与视频检查通过才可选用，不绕过 DRM 或付费墙。
+  - name: 汕头综合
+    url: http://dslive.grtn.cn/stzh/sd/live.m3u8
+    source: user-shantou
+    rights_note: 用户给定的汕头综合候选地址；当前执行环境请求超时，授权未核实。只有后续连接与视频检查通过才可选用，不绕过 DRM 或付费墙。
+
+checking:
+  network_mode: auto
+  concurrency: 24
+  connect_timeout: 4
+  http_timeout: 12
+  stream_timeout: 12
+  sample_seconds: 3
+  failure_threshold: 3
+  max_candidates_per_channel: 12
+  allow_private: false
