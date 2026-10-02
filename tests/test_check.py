@@ -94,6 +94,51 @@ class CheckTests(unittest.TestCase):
         self.assertIn("HTML", result["error"])
         self.assertTrue(result["family_observed"])
 
+    def test_forbidden_hls_segment_is_rejected_before_starting_ffmpeg(self):
+        class FakeResponse:
+            headers = {"Content-Type": "application/vnd.apple.mpegurl"}
+            url = "https://stream.example/live/index.m3u8"
+
+            def iter_content(self, chunk_size):
+                yield (
+                    b"#EXTM3U\n#EXTINF:4.0,\n"
+                    b"../../FORBID/1e547e6b/128.ts?expires=1\n"
+                )
+
+            def close(self):
+                pass
+
+        class FakeFetched:
+            response = FakeResponse()
+            family = "ipv4"
+            elapsed_ms = 2.0
+
+            def close(self):
+                self.response.close()
+
+        class FakeFetcher:
+            gets = 0
+
+            def __init__(self, *args, **kwargs):
+                pass
+
+            def get(self, _url):
+                self.gets += 1
+                return FakeFetched()
+
+        candidate = {"name": "demo", "url": "https://stream.example/live/index.m3u8"}
+        options = check._check_options({"reject_segment_paths": ["/forbid/"]})
+        with mock.patch.object(check, "_FamilyFetcher", FakeFetcher), mock.patch.object(
+            check, "_FFmpegSampler", side_effect=AssertionError("must not decode forbidden HLS")
+        ):
+            result = check._probe_family(candidate, "ipv4", ["93.184.216.34"], options, "local")
+        self.assertFalse(result["ok"])
+        self.assertEqual(result["error"], "HLS contains an access-denied placeholder")
+
+    def test_normal_baicheng_hls_segment_path_is_not_rejected(self):
+        urls = [("https://stream2.jlntv.cn/baicheng1_sd/128.ts?x=1", 4.0)]
+        check._reject_hls_segment_paths(urls, ["/forbid/"])
+
     def test_encrypted_hls_is_rejected(self):
         playlist = (
             b"#EXTM3U\n#EXT-X-KEY:METHOD=AES-128,URI=\"key.bin\"\n"

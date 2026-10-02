@@ -56,7 +56,8 @@ def retain_history(checks, previous, names, threshold):
             state[key] = {**current, "failures": 0, "last_ok_at": current.get("checked_at"), "retained": False}
         else:
             failures = old.get("failures", 0) + 1
-            if old.get("last_ok_at") and failures < threshold:
+            access_denied = current.get("error") == "HLS contains an access-denied placeholder"
+            if old.get("last_ok_at") and failures < threshold and not access_denied:
                 state[key] = {**old, "failures": failures, "retained": True, "latest_error": current.get("error", "failed")}
             else:
                 state[key] = {**current, "failures": failures, "last_ok_at": old.get("last_ok_at"), "retained": False}

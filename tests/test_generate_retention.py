@@ -33,6 +33,15 @@ class PublicationTests(unittest.TestCase):
         record = {"name": "购物台", "url": "https://example.com/shop", "family": "ipv4", "ok": True}
         self.assertEqual(retain_history([], {record_key(record): record}, {"CCTV-1 综合"}, 3), {})
 
+    def test_access_denied_placeholder_is_not_retained_as_last_good(self):
+        good = {"name": "四平综合", "url": "https://example.com/live", "family": None,
+                "ok": True, "checked_at": "old", "network_mode": "system_proxy"}
+        state = retain_history([good], {}, {good["name"]}, 3)
+        denied = {**good, "ok": False, "error": "HLS contains an access-denied placeholder"}
+        state = retain_history([denied], state, {good["name"]}, 3)
+        self.assertFalse(state[record_key(good)]["ok"])
+        self.assertFalse(state[record_key(good)]["retained"])
+
     def test_unavailable_family_does_not_expire_previous_stream(self):
         good = {"name": "汕头综合", "url": "https://example.com/live", "family": "ipv6", "ok": True, "checked_at": "today"}
         state = retain_history([good], {}, {good["name"]}, 3)

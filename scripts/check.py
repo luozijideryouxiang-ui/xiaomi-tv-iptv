@@ -560,6 +560,19 @@ def _parse_playlist(body: bytes, base_url: str) -> dict:
     }
 
 
+def _reject_hls_segment_paths(urls: list[tuple[str, float | None]], fragments: list[str]) -> None:
+    """Reject known access-denied placeholder paths before starting FFmpeg."""
+    if not fragments:
+        return
+    for segment_url, _duration in urls:
+        try:
+            path = urlsplit(segment_url).path.casefold()
+        except (TypeError, ValueError):
+            continue
+        if any(fragment in path for fragment in fragments):
+            raise ProbeError("HLS contains an access-denied placeholder")
+
+
 def _ffmpeg_path(options: dict) -> str:
     path = options.get("ffmpeg_path")
     if path:
@@ -745,6 +758,14 @@ def _check_options(options: dict) -> dict:
     network_mode = options.get("network_mode", "auto")
     if network_mode not in ("auto", "direct", "system_proxy"):
         network_mode = "auto"
+    raw_reject_segment_paths = options.get("reject_segment_paths", ())
+    reject_segment_paths = []
+    if isinstance(raw_reject_segment_paths, (list, tuple, set)):
+        for value in raw_reject_segment_paths:
+            if isinstance(value, str):
+                fragment = value.strip().casefold()
+                if fragment and fragment not in reject_segment_paths:
+                    reject_segment_paths.append(fragment)
     return {
         "max_workers": min(24, max(1, workers)),
         "allow_private": options.get("allow_private") is True,
@@ -756,6 +777,7 @@ def _check_options(options: dict) -> dict:
         "max_sample_bytes": min(8 * 1024 * 1024, max(256 * 1024, sample_bytes)),
         "ffmpeg_path": options.get("ffmpeg_path"),
         "network_mode": network_mode,
+        "reject_segment_paths": reject_segment_paths,
     }
 
 
@@ -862,6 +884,7 @@ def _probe_family(candidate: dict, family: str | None, initial_ips: list[str],
             urls.extend(zip(playlist["segments"], playlist["durations"]))
             if not urls:
                 raise ProbeError("HLS playlist contains no media segments")
+            _reject_hls_segment_paths(urls, options["reject_segment_paths"])
         else:
             # Continue the same bounded response so startup is measured from the
             # original connection and a live transport is not drained into RAM.
