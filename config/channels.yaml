@@ -262,3 +262,39 @@ channels:
     group: 广东
     elderly: true
     epg_names: [广东科教, "广东科教[1920x1080]"]
+  - name: 白城综合
+    group: 地方
+    elderly: true
+    epg_names: [白城综合, 白城电视台]
+  - name: 赤峰新闻综合
+    group: 地方
+    elderly: true
+    epg_names: [赤峰新闻综合, 赤峰综合]
+  - name: 楚雄新闻综合
+    group: 地方
+    elderly: true
+    epg_names: [楚雄新闻综合, 楚雄新闻]
+  - name: 哈尔滨新闻综合
+    group: 地方
+    elderly: true
+    epg_names: [哈尔滨新闻综合, 哈尔滨新闻]
+  - name: 哈尔滨影视
+    group: 地方
+    elderly: true
+    epg_names: [哈尔滨影视, 哈尔滨影视频道]
+  - name: 兰州新闻综合
+    group: 地方
+    elderly: true
+    epg_names: [兰州新闻综合, 兰州新闻]
+  - name: 兰州文旅
+    group: 地方
+    elderly: true
+    epg_names: [兰州文旅, 兰州文旅频道]
+  - name: 四平综合
+    group: 地方
+    elderly: true
+    epg_names: [四平综合, 四平电视台]
+  - name: 浙江国际
+    group: 地方
+    elderly: true
+    epg_names: [浙江国际, 浙江国际频道]
