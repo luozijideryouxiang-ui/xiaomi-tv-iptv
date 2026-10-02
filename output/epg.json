@@ -1,5 +1,5 @@
 {
-  "url": "https://raw.githubusercontent.com/luozijideryouxiang-ui/xiaomi-tv-iptv/main/output/epg.xml",
+  "url": "https://fastly.jsdelivr.net/gh/luozijideryouxiang-ui/xiaomi-tv-iptv@main/output/epg.xml",
   "mapping": {
     "CCTV-1 综合": "CCTV1",
     "CCTV-10 科教": "CCTV10",

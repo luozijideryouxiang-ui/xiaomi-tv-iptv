@@ -70,11 +70,11 @@ sources:
     rights_note: 同仓库中的 TXT 备用列表；只检查目标频道，不使用需要账号密码或 DRM 解密的线路。
 
 epg:
-  published_url: https://raw.githubusercontent.com/luozijideryouxiang-ui/xiaomi-tv-iptv/main/output/epg.xml
+  published_url: https://fastly.jsdelivr.net/gh/luozijideryouxiang-ui/xiaomi-tv-iptv@main/output/epg.xml
   urls:
     - https://live.fanmingming.cn/e.xml
     - https://raw.githubusercontent.com/fanmingming/live/main/e.xml
-  logo_template: https://raw.githubusercontent.com/fanmingming/live/main/tv/{name}.png
+  logo_template: https://fastly.jsdelivr.net/gh/fanmingming/live@main/tv/{name}.png
   rights_note: >-
     EPG 与台标入口取自 fanmingming/live README；README 说明其 EPG 由 112114.xyz 分发且无法保证准确性。
     README 所列网站台标域名在当前执行环境 TLS 失败，因此模板指向同一官方仓库中已确认可下载的图片文件。

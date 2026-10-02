@@ -6,15 +6,27 @@
 
 ## 发布与订阅地址
 
-仓库为 `luozijideryouxiang-ui/xiaomi-tv-iptv`。当前先发布播放列表和程序；每日自动更新尚未启用，因为当前 GitHub 登录缺少 `workflow` 权限。本地工作流已写完，授权后再上传并验证。
+仓库为 `luozijideryouxiang-ui/xiaomi-tv-iptv`。当前已发布播放列表和程序；每日自动更新仅保留在本地工作流中，GitHub workflow 尚未启用，因为当前 GitHub 登录缺少 `workflow` 权限。
 
-发布后建议家里长辈先只订阅 `elderly.m3u`：
+电视端已成功导入并使用以下 CDN 地址订阅长辈列表：
+
+```text
+https://fastly.jsdelivr.net/gh/luozijideryouxiang-ui/xiaomi-tv-iptv@main/output/elderly.m3u
+```
+
+对应的过滤后 EPG 地址是：
+
+```text
+https://fastly.jsdelivr.net/gh/luozijideryouxiang-ui/xiaomi-tv-iptv@main/output/epg.xml
+```
+
+Raw 地址保留为备用：
 
 ```text
 https://raw.githubusercontent.com/luozijideryouxiang-ui/xiaomi-tv-iptv/main/output/elderly.m3u
 ```
 
-首次本地实测选出 18 个频道，没有达到 40～60 个目标；广东地方台、汕头台等缺失项可查看 `output/report.json`。候选地址失败不会作为有效频道发布。电视导入与实播仍需在电视联网后完成。
+这台 Android 6 电视直连 GitHub Raw/Pages 地址时出现 TLS 失败，`fastly.jsdelivr.net` 地址已实测可用；更换地址时应优先使用 CDN。当前列表和 EPG 已成功导入电视。清除系统全局代理后，CCTV-1 直连 1280×720 硬件解码已通过；广东卫视在电视上显示缓冲，未通过，其他频道不据此推断。首次实测选出 18 个频道，没有达到 40～60 个目标，也不能称为全部汕头频道；广东地方台、汕头台等缺失项可查看 `output/report.json`。候选地址失败不会作为有效频道发布。
 
 ## 本地安装与运行
 
@@ -117,20 +129,20 @@ aliases:
 
 `checking.network_mode` 默认是 `auto`。检测到系统代理时，程序通过系统网络获取有限视频样本，成功线路可进入主列表，但上游地址族记为未验证，不进入 IPv4/IPv6 专用列表；没有代理时分别直连检测两个地址族。可配置 `direct` 强制直连，或 `system_proxy` 使用系统网络；程序不会把本机代理地址或凭据写入输出。未执行的地址族检测不会累计线路失败次数。
 
-`epg.published_url` 指向本仓库过滤后的 `output/epg.xml`，减少电视读取的节目单体积。Fork 到自己的仓库时，同时修改此地址和电视订阅地址。
+`epg.published_url` 当前指向 `https://fastly.jsdelivr.net/gh/luozijideryouxiang-ui/xiaomi-tv-iptv@main/output/epg.xml`，减少电视读取的节目单体积。Fork 到自己的仓库时，同时修改此地址和电视订阅地址。
 
 ## GitHub Actions 更新
 
-`.github/workflows/update.yml` 配置了每日计划、手动运行，以及 `main` 分支上的配置、脚本、测试、依赖或 workflow 文件变化时的更新。计划时间是 `20:17 UTC`，即中国时间次日 `04:17`。定时任务只在默认分支运行；生成文件有变化时，workflow 只提交 `output/`。需要手动更新时，在仓库 **Actions → Update IPTV → Run workflow** 启动。
+`.github/workflows/update.yml` 在本地配置了每日计划、手动运行，以及 `main` 分支上的配置、脚本、测试、依赖或 workflow 文件变化时的更新。计划时间是 `20:17 UTC`，即中国时间次日 `04:17`。由于当前 GitHub 登录缺少 `workflow` 权限，GitHub 端 workflow 尚未启用，当前只能在本地运行更新命令；不要把本地文件中的计划时间当成已运行的定时任务。
 
-GitHub 的计划任务可能因 Actions 高负载而延迟；公开仓库连续 60 天没有活动时，计划任务可能被自动停用。需要查看最近结果时，在仓库的 **Actions → Update IPTV** 查看运行记录；若任务停用，可按 [GitHub 文档](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/disable-and-enable-workflows) 重新启用。计划时间和延迟说明见 [GitHub schedule 事件文档](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows)。
+以后启用 GitHub workflow 后，计划任务可能因 Actions 高负载而延迟；公开仓库连续 60 天没有活动时，计划任务可能被自动停用。当前没有可供查看的 GitHub workflow 运行记录；启用后可在仓库的 **Actions → Update IPTV** 查看，若任务停用，可按 [GitHub 文档](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/disable-and-enable-workflows) 重新启用。计划时间和延迟说明见 [GitHub schedule 事件文档](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows)。
 
 ## 在小米电视导入
 
-建议先用 OpenTV，只添加一个长辈列表，减少入口和频道重复：
+建议使用 OpenTV，只添加一个长辈列表，减少入口和频道重复。电视端本轮已成功导入上面的 CDN 播放列表和 EPG：
 
 1. 在电视安装并打开 OpenTV。
-2. 在播放列表或网络 M3U 导入页面，粘贴上方 `elderly.m3u` Raw 地址。
-3. 保存并刷新列表；能否播放以电视当前网络实际结果为准。
+2. 在播放列表或网络 M3U 导入页面，粘贴上方 CDN 地址。
+3. 在节目单设置中使用同前缀的 `epg.xml` 地址，保存并刷新列表；能否播放以电视当前网络和逐频道验证结果为准。
 
-电视导入和播放效果尚需在目标设备上实测；如果订阅返回 404，请检查仓库默认分支及 `output/elderly.m3u` 是否已上传。
+如果 CDN 订阅返回错误，可临时尝试上面的 Raw 备用地址；Android 6 上 Raw/Pages 可能继续出现 TLS 错误。若返回 404，请检查仓库默认分支及 `output/elderly.m3u` 是否已上传。
