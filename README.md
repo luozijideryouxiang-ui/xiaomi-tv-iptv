@@ -11,13 +11,13 @@
 电视端已成功导入并使用以下 CDN 地址订阅长辈列表：
 
 ```text
-https://fastly.jsdelivr.net/gh/luozijideryouxiang-ui/xiaomi-tv-iptv@main/output/elderly.m3u
+https://cdn.jsdelivr.net/gh/luozijideryouxiang-ui/xiaomi-tv-iptv@main/output/elderly.m3u
 ```
 
 对应的过滤后 EPG 地址是：
 
 ```text
-https://fastly.jsdelivr.net/gh/luozijideryouxiang-ui/xiaomi-tv-iptv@main/output/epg.xml
+https://cdn.jsdelivr.net/gh/luozijideryouxiang-ui/xiaomi-tv-iptv@main/output/epg.xml
 ```
 
 Raw 地址保留为备用：
@@ -26,7 +26,7 @@ Raw 地址保留为备用：
 https://raw.githubusercontent.com/luozijideryouxiang-ui/xiaomi-tv-iptv/main/output/elderly.m3u
 ```
 
-这台 Android 6 电视直连 GitHub Raw/Pages 地址时出现 TLS 失败，`fastly.jsdelivr.net` 地址已实测可用；更换地址时应优先使用 CDN。清除系统全局代理后，CCTV-1 直连 1280×720 硬件解码已通过；广东卫视在电视上显示缓冲，未通过，其他频道不据此推断。
+这台 Android 6 电视直连 GitHub Raw/Pages 地址时出现 TLS 失败。原 fastly 订阅在本轮电视实际下载仍是 18 台旧版本，已经改为上面的 cdn 订阅；OpenTV 已成功导入 27 台。清除系统全局代理后，CCTV-1 直连 1280×720 硬件解码已通过；广东卫视在电视上显示缓冲，未通过，其他频道不据此推断。
 
 2026-10-02 扩展后主列表和长辈列表均为 27 个唯一频道，新增白城综合、赤峰新闻综合、楚雄新闻综合、哈尔滨新闻综合、哈尔滨影视、兰州新闻综合、兰州文旅、四平综合、浙江国际。9 个新增频道均通过本机短时视频解码检查；赤峰、兰州新闻综合、哈尔滨影视也在电视 VLC 中取得视频输出。电视 VLC 的结果不能代替 OpenTV 的逐台验证，地区限制及直播签名到期也可能影响后续访问。仍未达到 40～60 个目标；汕头三台候选连接被拒绝或旧域名解析失败，官网“直播汕头”入口是活动直播/回放，未发现可独立订阅的常态三台 HLS，没有填入失效地址。缺失频道、近期失败和保留的旧成功结果见 `output/report.json`。
 
@@ -131,7 +131,7 @@ aliases:
 
 `checking.network_mode` 默认是 `auto`。检测到系统代理时，程序通过系统网络获取有限视频样本，成功线路可进入主列表，但上游地址族记为未验证，不进入 IPv4/IPv6 专用列表；没有代理时分别直连检测两个地址族。可配置 `direct` 强制直连，或 `system_proxy` 使用系统网络；程序不会把本机代理地址或凭据写入输出。未执行的地址族检测不会累计线路失败次数。
 
-`epg.published_url` 当前指向 `https://fastly.jsdelivr.net/gh/luozijideryouxiang-ui/xiaomi-tv-iptv@main/output/epg.xml`，减少电视读取的节目单体积。Fork 到自己的仓库时，同时修改此地址和电视订阅地址。
+`epg.published_url` 当前指向 `https://cdn.jsdelivr.net/gh/luozijideryouxiang-ui/xiaomi-tv-iptv@main/output/epg.xml`，减少电视读取的节目单体积。Fork 到自己的仓库时，同时修改此地址和电视订阅地址。
 
 ## GitHub Actions 更新
 

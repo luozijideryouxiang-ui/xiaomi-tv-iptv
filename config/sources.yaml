@@ -70,7 +70,7 @@ sources:
     rights_note: 同仓库中的 TXT 备用列表；只检查目标频道，不使用需要账号密码或 DRM 解密的线路。
 
 epg:
-  published_url: https://fastly.jsdelivr.net/gh/luozijideryouxiang-ui/xiaomi-tv-iptv@main/output/epg.xml
+  published_url: https://cdn.jsdelivr.net/gh/luozijideryouxiang-ui/xiaomi-tv-iptv@main/output/epg.xml
   urls:
     - https://live.fanmingming.cn/e.xml
     - https://raw.githubusercontent.com/fanmingming/live/main/e.xml
